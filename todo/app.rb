@@ -23,6 +23,7 @@ get '/' do
   @lists = List.all
   if current_user.nil? then
     @tasks = Task.none
+    redirect '/signup'
   elsif params[:list].nil? then
     @tasks = current_user.tasks
   else
