@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="UTF-8">
+
+  <title>todoアプリ</title>
+
+</head>
+<body>
+<div  id="calendar"></div>
+ <div class="main">
+  <nav class="navbar navbar-default">
+   <div class="container">
+      <a href="/" class="navbar-nav navbar-right">todoアプリ</a>
+   </div>
+   <ul>
+    <% if !current_user.nil? %>
+      <li>こんにちは、<%= current_user.name%>さん</li>
+      <li><a href="/signout">ログアウト</a></li>
+    <% else %>
+      <li>新規ユーザですか？</li>
+      <li><a href="/signin">ログイン</a></li>
+      <li><a href="/signup">新規登録</a></li>
+    <% end %>
+   </ul>
+  </nav>
+  <%= yield %>
+ </div>
+</body>
+</html>
+
+<style>
+#calender{
+  position:relative;
+}
+.main{
+  position:absolute;
+  top:10%;
+  left:60%;
+}
+h1 {
+    font-size: 18px;
+}
+
+table {
+  position:relative;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 30px;
+    text-align: center;
+}
+
+td:first-child {
+    color: red;
+}
+
+td:last-child {
+    color: royalblue;
+}
+</style>
+
+
+<script type="text/javascript">
+  const weeks = ['日', '月', '火', '水', '木', '金', '土']
+const date = new Date()
+const year = date.getFullYear()
+const month = date.getMonth() + 1
+const startDate = new Date(year, month - 1, 1) // 月の最初の日を取得
+const endDate = new Date(year, month, 0) // 月の最後の日を取得
+const endDayCount = endDate.getDate() // 月の末日
+const startDay = startDate.getDay() // 月の最初の日の曜日を取得
+let dayCount = 1  // 日にちのカウント
+let calendarHtml = '' // HTMLを組み立てる変数
+var tabe = document.getElementById('space');
+
+calendarHtml += '<h1>' + year + '/' + month + '</h1>'
+calendarHtml += '<table>'
+
+// 曜日の行を作成
+for (let i = 0; i < weeks.length; i++) {
+  calendarHtml += '<td>' + weeks[i] + '</td>'
+}
+
+for (let w = 0; w < 11; w++) {
+  calendarHtml += '<tr>'
+  for (let d = 0; d < 7; d++) {
+    if (w == 0 && d < startDay) {
+      // 1行目で1日の曜日の前
+      calendarHtml += '<td></td>'
+    } else if (dayCount > endDayCount) {
+      // 末尾の日数を超えた
+      calendarHtml += '<td></td>'
+    } else if (w % 2 == 0) {
+      calendarHtml += '<td>' + dayCount + '</td>'
+      dayCount++
+    } else {
+
+    }
+  }
+  calendarHtml += '</tr>'
+}
+calendarHtml += '</table>'
+
+
+document.querySelector('#calendar').innerHTML = calendarHtml
+
+</script>

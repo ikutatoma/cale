@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="style.css">
+<div class= "container">
+	<div class="row">
+		<div class="col-lg-2">
+				<ul class="list-group">
+					<%= erb :_count_all, locals: {title: "top",url: "/", tasks: Task.all} %>
+
+						<%= erb :_count_all, locals: {title: "done",url: "/tasks/done", tasks: Task.where(completed: true)} %>
+
+					<%= erb :_count_due, locals: {title: "締め切り過ぎた", url: "/tasks/over", tasks: Task.all} %>
+
+					<% @lists.each do |list| %>
+						<%= erb :_count_all, locals: {title: list.name, url: "/?list=#{list.id}", tasks: list.tasks} %>
+					<% end %>
+				</ul>
+
+
+			<div class="col-lg-10">
+				<table class="table-striped table-bordered table-hover">
+					<tbody>
+						<% @tasks.each do | task |%>
+							<tr>
+
+								<td><%= CGI.escapeHTML(task.title) %></td>
+								<td><%= task.due_date %></td>
+								<td>
+									<form action="/tasks/<%= task.id %>/delete" method= "post">
+										<input type="submit" value= "削除">
+									</form>
+								</td>
+								<td>
+									<% unless task.completed %>
+										<form action="/tasks/<%= task.id %>/done" method="post">
+											<input type="submit" value="Done!">
+										</form>
+									<% else %>
+										Done!
+									<% end %>
+								</td>
+								<td><a href="/tasks/<%= task.id %>/edit">編集</a></td>
+								<td>
+									<% unless task.completed %>
+										<% if task.remained_days < 0  %>
+											締切過ぎた
+										<% elsif task.remained_days == 0 %>
+											今日締切
+										<% elsif task.remained_days < 7 %>
+											締切近い
+								  	<% elsif task.remained_days >= 7 %>
+											まだ大丈夫
+										<% end %>
+									<% end %>
+								</td>
+								<td>
+									<a href="/tasks/<%= task.id %>/star"  style="
+									<% if task.star %>
+										background-color:red;
+									<% else %>
+										background-color:white;
+									<% end %>
+									border: 1px solid black;
+									width: 10px;
+									height: 10px;
+									display: block;
+									"></a>
+								</td>
+							</tr>
+						<% end %>
+						<div class="lili">
+							<tr><td colspan="6"><a href="/tasks/new">新しいtodo</a></td></tr>
+							<tr><td colspan="6"><a href="/lists/new" class=>リストを追加する</a></td></tr>
+						</div>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+
+</style>

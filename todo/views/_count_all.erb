@@ -1,0 +1,11 @@
+  <li class="list-group-item">
+    <a href="<%= url%>">
+      <%= title %>
+      <% unless current_user.nil? %>
+        <% count_all = tasks.had_by(current_user).count %>
+          <% if count_all != 0 %>
+            <span class="badge pull-right"><%= count_all %></span>
+          <% end %>
+      <% end %>
+    </a>
+  </li>
